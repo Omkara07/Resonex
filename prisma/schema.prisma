@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(uuid())
+  email    String   @unique
+  provider Provider
+  upvotes  Upvote[]
+  streams  Stream[]
+}
+
+model Stream {
+  id          String     @id @default(uuid())
+  type        StreamType
+  url         String
+  extractedId String
+  title       String
+  img         String
+  active      Boolean    @default(true)
+  upvotes     Upvote[]
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+}
+
+model Upvote {
+  id       String @id @default(uuid())
+  streamId String
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  stream   Stream @relation(fields: [streamId], references: [id])
+
+  @@unique([userId, streamId])
+}
+
+enum StreamType {
+  Youtube
+}
+
+enum Provider {
+  Google
+}
