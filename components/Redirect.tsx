@@ -1,20 +1,27 @@
 "use client"
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { use, useEffect } from 'react'
 
 const Redirect = () => {
-    const session = useSession()
-    const router = useRouter()
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const pathname = usePathname(); // Get the current pathname
+
     useEffect(() => {
-        if (session?.data?.user) {
-            router.push("/dashboard")
+        if (status === 'loading') {
+            // Avoid running logic while the session is loading
+            return;
         }
-        else {
-            router.push("/")
+
+        if (!session) {
+            router.push('/');
+        } else if (pathname === '/') {
+            router.push('/dashboard');
         }
-    }, [session])
-    return null
+    }, [session, status, pathname, router]);
+
+    return null;
 }
 
 export default Redirect

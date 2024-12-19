@@ -1,4 +1,4 @@
-import SongQueueContextProvider, { SongQueueContext } from "@/context/SongQueueContext";
+import { SongQueueContext } from "@/context/SongQueueContext";
 import { useContext } from "react";
 
 // Hook for consuming the context

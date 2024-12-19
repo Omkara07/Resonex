@@ -7,11 +7,12 @@ import { Button } from '@/components/ui/button'
 import { PlusCircle } from 'lucide-react'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
-import { useSongQueue } from '../hooks/UseSongQueue'
+import { useSongQueue } from '../../hooks/UseSongQueue'
 import { Skeleton } from './skeleton'
 import { toast } from 'sonner'
+import { ShareButton } from './share-button'
 
-export function AddSongForm() {
+export function AddSongForm({ creatorId }: { creatorId: string }) {
     const [url, setUrl] = useState('')
     const session: any = useSession()
     const [videoData, setVideoData] = useState<any>(null)
@@ -61,11 +62,11 @@ export function AddSongForm() {
         try {
 
             axios.post('/api/streams', {
-                creatorId: session.data?.user?.id,
+                creatorId: creatorId,
                 url
             })
             setUrl('')
-            getStreams()
+            getStreams({ creatorId })
             toast.success("Song added to Queue")
         }
         catch (e) {
@@ -75,9 +76,12 @@ export function AddSongForm() {
     }
     return (
         <>
-            <Card className="bg-gray-950 relative overflow-hidden">
-                <CardHeader className="">
-                    <CardTitle className="text-white">Add a Song</CardTitle>
+            <Card className="bg-gray-950 relative overflow-hidden md:w-[80%] md:mx-auto">
+                <CardHeader>
+                    <div className='flex justify-between items-center'>
+                        <CardTitle className="text-white flex">Add a Song</CardTitle>
+                        <ShareButton creatorId={creatorId} />
+                    </div>
                 </CardHeader>
                 <CardContent className="p-4">
                     <form onSubmit={handleSubmit} className="flex space-x-2">
@@ -96,8 +100,8 @@ export function AddSongForm() {
                 </CardContent >
             </Card >
             {url && (
-                <div className='w-full mx-auto -top-5 relative justify-center'>
-                    <div className="absolute z-10 md:w-2/3 w-full aspect-video bg-gray-800 p-4 rounded-md shadow-md ">
+                <div className='w-full md:w-[80%] mx-auto -top-8 relative justify-center'>
+                    <div className="absolute z-10 md:w-2/3 mx-auto w-full aspect-video bg-gray-800 p-4 rounded-md shadow-md ">
                         {
                             loading ?
                                 (

@@ -7,31 +7,26 @@ import { ThumbsUp, ThumbsDown, ArrowBigUp, ArrowBigDown } from 'lucide-react'
 import axios from "axios";
 import { useSession } from 'next-auth/react'
 import { SongQueueContext } from '@/context/SongQueueContext'
-import { useSongQueue } from '../hooks/UseSongQueue'
+import { useSongQueue } from '../../hooks/UseSongQueue'
 import { Skeleton } from './skeleton'
 import { toast } from 'sonner'
-
-interface Song {
-    id: string
-    title: string
-    img: string
-    artist: string
-    thumbnail: string
-    upvotes: number
-    haveUpvoted: boolean
-    userId: string
-}
+import { Song } from '@/context/SongQueueContext'
 
 
-export function SongQueue() {
+export function SongQueue({ creatorId }: { creatorId: string }) {
+    const session: any = useSession()
     const { queue, setQueue, getStreams } = useSongQueue()
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        getStreams()
-        setLoading(false)
+        const fetchData = async () => {
+            await getStreams({ creatorId })
+            setLoading(false)
+        }
+
+        fetchData()
         const interval = setInterval(() => {
-            getStreams()
+            getStreams({ creatorId })
         }, 10 * 1000)
         return () => clearInterval(interval)
     }, [])
@@ -41,7 +36,11 @@ export function SongQueue() {
                 .map(song =>
                     song.id === id ? { ...song, upvotes: song.upvotes + (haveUpvoted ? -1 : 1), haveUpvoted: !haveUpvoted } : song
                 )
-                .sort((a, b) => b.upvotes - a.upvotes)
+                .sort((a: Song, b: Song) => {
+                    if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;
+                    // If upvotes are equal, sort by title alphabetically
+                    return a.title.localeCompare(b.title);
+                })
         )
         haveUpvoted ? axios.post('/api/streams/downvote', {
             streamId: id,
@@ -120,7 +119,7 @@ export function SongQueue() {
                                                         <Button
                                                             size="lg"
                                                             variant="outline"
-                                                            onClick={() => handleVote(song.id, song.haveUpvoted, song.userId)}
+                                                            onClick={() => handleVote(song.id, song.haveUpvoted, session?.data?.user.id)}
                                                             className="flex-1 sm:flex-initial items-center text-gray-400 hover:text-gray-200 hover:bg-gray-700"
                                                         >
                                                             <ArrowBigDown className="h-4 w-4" />
@@ -129,7 +128,7 @@ export function SongQueue() {
                                                         <Button
                                                             size="lg"
                                                             variant="outline"
-                                                            onClick={() => handleVote(song.id, song.haveUpvoted, song.userId)}
+                                                            onClick={() => handleVote(song.id, song.haveUpvoted, session?.data?.user.id)}
                                                             className="flex-1 sm:flex-initial items-center text-gray-400 hover:text-gray-200 hover:bg-gray-700"
                                                         >
                                                             <ArrowBigUp className="h-4 w-4" />
@@ -143,7 +142,7 @@ export function SongQueue() {
                             </ul>
                 }
             </CardContent>
-        </Card>
+        </Card >
     )
 }
 

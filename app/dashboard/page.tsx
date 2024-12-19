@@ -1,36 +1,18 @@
-import { DashboardHeader } from '@/components/ui/dashboard-header'
-import { YouTubePlayer } from '@/components/ui/youtube-player'
-import { SongQueue } from '@/components/ui/song-queue'
-import { AddSongForm } from '@/components/ui/add-song-form'
-import { ShareButton } from '@/components/ui/share-button'
+import UserDashboardPage from '@/components/ui/userDashboardPage'
+import { getServerSession } from 'next-auth'
+import { NEXT_AUTH_CONFIG } from '../lib/auth'
 import Redirect from '@/components/Redirect'
-import SongQueueContextProvider from '@/context/SongQueueContext'
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+    const session = await getServerSession(NEXT_AUTH_CONFIG)
+    if (!session) {
+        return null
+    }
     return (
-        <div className="bg-black text-white h-screen">
+        <>
             <Redirect />
-            <DashboardHeader />
-            <SongQueueContextProvider>
-                <main className="container mx-auto md:px-4 md:pt-4 space-y-6">
-                    <div className="grid gap-6 md:grid-cols-2">
-                        <div className='max-md:hidden w-3/4 mx-auto'>
-                            <SongQueue />
-                        </div>
-                        <div className="space-y-6 md:w-3/4 max-md:p-3 mx-auto">
-                            <AddSongForm />
-                            <YouTubePlayer />
-                            <div className='overflow-auto md:hidden'>
-                                <SongQueue />
-                            </div>
-                            <div className="flex justify-center">
-                                <ShareButton />
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </SongQueueContextProvider>
-        </div>
+            <UserDashboardPage creatorId={session?.user?.id} canPlay={true} />
+        </>
     )
 }
 

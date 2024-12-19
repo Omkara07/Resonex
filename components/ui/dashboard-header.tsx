@@ -14,11 +14,11 @@ export function DashboardHeader() {
                 {
                     session?.data ?
                         <div>
-                            <button className="flex text-sm hover:text-emerald-400 duration-150 font-semibold" onClick={() => signOut()}>Logout</button>
+                            <button className="flex text-sm duration-150 font-medium text-black bg-gray-400 hover:bg-white px-4 py-1.5 rounded-lg" onClick={() => signOut()}>Logout</button>
                         </div>
                         :
                         <div className="flex gap-6 text-sm">
-                            <button className="flex hover:text-emerald-400 duration-150 font-semibold" onClick={() => signIn()}>Login</button>
+                            <button className="flex text-sm duration-150 font-medium text-black bg-gray-400 hover:bg-white px-4 py-1.5 rounded-lg" onClick={() => signIn()}>Login</button>
                         </div>
                 }
             </div>

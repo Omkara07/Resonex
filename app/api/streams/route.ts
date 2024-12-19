@@ -2,6 +2,8 @@ import { prismaClient } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod"
 import { google } from "googleapis"
+import { getServerSession } from "next-auth";
+import { NEXT_AUTH_CONFIG } from "@/app/lib/auth";
 
 const CreateStreamSchema = z.object({
     creatorId: z.string(),
@@ -11,14 +13,53 @@ export const YT_Regex = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]+$/
 
 export async function GET(req: NextRequest) {
     const creatorId = req.nextUrl.searchParams.get("creatorId")
-    const streams = await prismaClient.stream.findMany({
+    if (!creatorId) {
+        return NextResponse.json({
+            message: "User not found"
+        }, {
+            status: 403
+        })
+    }
+    const session = await getServerSession(NEXT_AUTH_CONFIG);
+    if (!session && session.user) {
+        return NextResponse.json({
+            message: "User not found"
+        }, {
+            status: 403
+        })
+    }
+    const [streams, activeStreams] = await Promise.all([prismaClient.stream.findMany({
         where: {
-            userId: creatorId ?? ""
+            userId: creatorId,
+            played: false
+        },
+        include: {
+            _count: {
+                select: {
+                    upvotes: true
+                }
+            },
+            upvotes: {
+                where: {
+                    userId: session.user?.id
+                }
+            }
         }
-    })
-    console.log(streams)
+    }), prismaClient.currentStream.findUnique({
+        where: {
+            userId: creatorId
+        },
+        include: {
+            stream: true
+        }
+    })])
     return NextResponse.json({
-        streams
+        streams: streams.map(({ _count, ...rest }) => ({
+            ...rest,
+            upvotes: _count.upvotes,
+            haveUpvoted: rest.upvotes.length ? true : false
+        })),
+        activeStreams
     })
 }
 
