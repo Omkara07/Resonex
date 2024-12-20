@@ -9,7 +9,7 @@ const CreateStreamSchema = z.object({
     creatorId: z.string(),
     url: z.string()
 })
-const YT_Regex = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]+$/
+const YT_Regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|v\/|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[^\s]*)/;
 
 export async function GET(req: NextRequest) {
     const creatorId = req.nextUrl.searchParams.get("creatorId")
@@ -73,7 +73,9 @@ export async function POST(req: NextRequest) {
                 status: 411
             })
         }
-        const extractedId = data.url.split("?v=")[1]
+        const extractedId = data.url.includes("youtu.be")
+            ? data.url.split("youtu.be/")[1].split("?")[0]
+            : data.url.split("?v=")[1];
         const youtube = google.youtube({
             version: "v3",
             auth: process.env.YOUTUBE_API_KEY ?? "",
