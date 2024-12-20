@@ -7,7 +7,9 @@ interface PageProps {
     }
 }
 
+// @ts-ignore
 export default async function CreatorPage({ params }: PageProps) {
+    // @ts-ignore
     const { creatorId } = await params
 
     return (
