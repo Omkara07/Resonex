@@ -9,7 +9,7 @@ const CreateStreamSchema = z.object({
     creatorId: z.string(),
     url: z.string()
 })
-export const YT_Regex = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]+$/
+const YT_Regex = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]+$/
 
 export async function GET(req: NextRequest) {
     const creatorId = req.nextUrl.searchParams.get("creatorId")
