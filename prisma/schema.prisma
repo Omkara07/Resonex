@@ -16,6 +16,8 @@ datasource db {
 model User {
   id       String   @id @default(uuid())
   email    String   @unique
+  name     String?
+  password String?
   provider Provider
   upvotes  Upvote[]
   streams  Stream[]
@@ -41,6 +43,8 @@ model Stream {
 model CurrentStream {
   userId   String  @id
   streamId String? @unique
+  img      String?
+  password String?
   stream   Stream? @relation(fields: [streamId], references: [id])
 }
 
@@ -60,4 +64,5 @@ enum StreamType {
 
 enum Provider {
   Google
+  Credentials
 }

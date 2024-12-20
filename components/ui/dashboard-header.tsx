@@ -14,7 +14,9 @@ export function DashboardHeader() {
                 {
                     session?.data ?
                         <div>
-                            <button className="flex text-sm duration-150 font-medium text-black bg-gray-400 hover:bg-white px-4 py-1.5 rounded-lg" onClick={() => signOut()}>Logout</button>
+                            <button className="flex text-sm duration-150 font-medium text-black bg-gray-400 hover:bg-white px-4 py-1.5 rounded-lg" onClick={() => signOut({
+                                callbackUrl: '/auth/signin?callbackUrl=/dashboard', // Redirect to signin page after logout
+                            })}>Logout</button>
                         </div>
                         :
                         <div className="flex gap-6 text-sm">
@@ -22,7 +24,7 @@ export function DashboardHeader() {
                         </div>
                 }
             </div>
-        </header>
+        </header >
     )
 }
 

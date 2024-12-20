@@ -1,7 +1,7 @@
-"use client"
-import { useSession } from 'next-auth/react'
-import { usePathname, useRouter } from 'next/navigation'
-import React, { use, useEffect } from 'react'
+"use client";
+import { useSession } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const Redirect = () => {
     const { data: session, status } = useSession();
@@ -14,14 +14,16 @@ const Redirect = () => {
             return;
         }
 
-        if (!session) {
-            router.push('/');
-        } else if (pathname === '/') {
+        if (!session && pathname !== '/') {
+            const callbackUrl = encodeURIComponent(pathname || "/");
+            router.push(`/auth/signin?callbackUrl=${callbackUrl}`);
+        } else if (session && pathname === '/') {
+            // Redirect authenticated users to the dashboard if on the root path
             router.push('/dashboard');
         }
     }, [session, status, pathname, router]);
 
     return null;
-}
+};
 
-export default Redirect
+export default Redirect;

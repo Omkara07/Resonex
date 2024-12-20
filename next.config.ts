@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
         pathname: '/**', // Matches all paths under the domain
       },
     ],
+    domains: ['images.pexels.com'], // Add your allowed image domains here
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 

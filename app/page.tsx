@@ -11,9 +11,12 @@ export default async function Home() {
   } catch (error) {
     console.error("Error fetching session:", error);
   }
+  if (session) {
+    console.log(session)
+    return <Redirect />
+  }
   return (
     <>
-      <Redirect />
       <div className="flex justify-center">
         <Navbar />
       </div>
