@@ -1,15 +1,7 @@
 import { Suspense } from 'react'
 import UserDashboardPage from '@/components/ui/userDashboardPage'
 
-interface PageProps {
-    params: {
-        creatorId: string
-    }
-}
-
-// @ts-ignore
-export default async function CreatorPage({ params }: PageProps) {
-    // @ts-ignore
+export default async function CreatorPage({ params }: { params: any }) {
     const { creatorId } = await params
 
     return (
