@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
         })
     }
     const session = await getServerSession(NEXT_AUTH_CONFIG);
-    if (!session && session.user) {
+    if (!session) {
         return NextResponse.json({
             message: "User not found"
         }, {

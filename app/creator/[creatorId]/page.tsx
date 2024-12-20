@@ -1,22 +1,18 @@
-"use client"
-import Redirect from '@/components/Redirect'
+import { Suspense } from 'react'
 import UserDashboardPage from '@/components/ui/userDashboardPage'
-import React from 'react'
 
 interface PageProps {
     params: {
-        creatorId: string;
-    };
+        creatorId: string
+    }
 }
 
-const Page: React.FC<PageProps> = ({ params }) => {
-    const { creatorId } = params;
+export default async function CreatorPage({ params }: PageProps) {
+    const { creatorId } = await params
+
     return (
-        <>
-            <Redirect />
+        <Suspense fallback={<div>Loading...</div>}>
             <UserDashboardPage creatorId={creatorId} canPlay={false} />
-        </>
-    );
+        </Suspense>
+    )
 }
-
-export default Page;
