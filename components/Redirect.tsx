@@ -17,7 +17,7 @@ const Redirect = () => {
         if (!session && pathname !== '/') {
             const callbackUrl = encodeURIComponent(pathname || "/");
             router.push(`/auth/signin?callbackUrl=${callbackUrl}`);
-        } else if (session && pathname === '/') {
+        } else if (session && (pathname === '/' || pathname === '/auth/signin' || pathname === '/auth/signup')) {
             // Redirect authenticated users to the dashboard if on the root path
             router.push('/dashboard');
         }

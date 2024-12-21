@@ -60,6 +60,7 @@ export const NEXT_AUTH_CONFIG = {
                     await prismaClient.user.create({
                         data: {
                             email: user.email,
+                            name: user.name,
                             provider: "Google"
                         }
                     })

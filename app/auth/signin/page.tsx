@@ -1,7 +1,20 @@
+import { NEXT_AUTH_CONFIG } from '@/app/lib/auth';
+import Redirect from '@/components/Redirect';
 import { LoginForm } from '@/components/ui/Login-form'
+import { getServerSession } from 'next-auth';
 import Image from 'next/image'
 
-export default function LoginPage() {
+export default async function LoginPage() {
+    let session;
+    try {
+        session = await getServerSession(NEXT_AUTH_CONFIG);
+    } catch (error) {
+        console.error("Error fetching session:", error);
+    }
+    if (session) {
+        console.log(session)
+        return <Redirect />
+    }
     return (
         <div className="flex h-screen bg-black">
             <div className="w-full md:w-1/2 flex items-center justify-center p-8">
