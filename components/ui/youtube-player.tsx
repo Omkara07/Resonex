@@ -201,13 +201,12 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
                         </div>
                     </div>
                 ) : (
-                    <div className='md:w-full flex flex-col max-md:w-full ' >
-                        <div className="aspect-video bg-gray-800 relative overflow-hidden max-w-full">
+                    <div className='md:w-full flex flex-col max-md:w-screen ' >
+                        <div className="aspect-video bg-gray-800 flex overflow-hidden -px-3">
                             {activeStream ? (
-                                <div ref={playerContainerRef} className="absolute inset-0 "
-                                    style={{ contain: 'strict' }} />
+                                <div ref={playerContainerRef} className='aspect-video' />
                             ) : (
-                                <div className='bg-gray-900 flex justify-center items-center h-full'>
+                                <div className='bg-gray-900 flex w-full justify-center items-center h-full'>
                                     No Active Stream
                                 </div>
                             )}
@@ -233,7 +232,7 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
                                         disabled={loading}
                                         className='font-semi-bold'
                                     >
-                                        Play Next<ChevronLast className="w-4 h-4 ml-2" />
+                                        Play Next<ChevronLast className="w-4 h-4 md:ml-2" />
                                     </Button>
                                 )}
                             </div>
