@@ -191,7 +191,7 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
     }, [activeStream?.extractedId, creatorId, session?.data?.user?.id, loading]);
 
     return (
-        <Card className=" bg-gray-950 relative md:w-[80%] w-screen md:mx-auto">
+        <Card className=" bg-gray-950 relative md:w-[80%] w-full md:mx-auto">
             <CardContent className="p-0">
                 {loading ? (
                     <div>

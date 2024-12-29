@@ -11,13 +11,15 @@ import Redirect from '../Redirect'
 export default function UserDashboardPage({ creatorId, canPlay }: { creatorId: string, canPlay: boolean }) {
     const session = getServerSession(NEXT_AUTH_CONFIG)
     return (
-        <div className="bg-black text-white h-screen w-full">
+        <div className="bg-black text-white h-screen w-screen">
             <Redirect />
-            <DashboardHeader />
+            <div className='w-full'>
+                <DashboardHeader />
+            </div>
             <SongQueueContextProvider>
-                <main className="container mx-auto md:px-4 md:pt-4 space-y-6">
+                <main className="container md:mx-auto md:px-4 md:pt-4 space-y-6">
                     <div className="grid  md:grid-cols-2 w-full ">
-                        <div className='max-md:hidden w-3/4 ml-auto '>
+                        <div className='max-md:hidden md:w-3/4 md:ml-auto '>
                             <SongQueue creatorId={creatorId} />
                         </div>
                         <div className="space-y-6 md:w-3/4  max-md:p-3 mr-auto">

@@ -76,7 +76,7 @@ export function AddSongForm({ creatorId }: { creatorId: string }) {
     }
     return (
         <>
-            <Card className="bg-gray-950 relative overflow-hidden md:w-[80%] md:mx-auto">
+            <Card className="bg-gray-950 relative overflow-hidden md:w-[80%] w-full md:mx-auto">
                 <CardHeader>
                     <div className='flex justify-between items-center'>
                         <CardTitle className="text-white flex">Add a Song</CardTitle>
