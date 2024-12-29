@@ -24,8 +24,8 @@ declare global {
                         rel?: 0 | 1;
                         showinfo?: 0 | 1;
                     };
-                    width: string;
-                    height: string;
+                    width?: string;
+                    height?: string;
                     events?: {
                         onReady?: (event: any) => void;
                         onStateChange?: (event: any) => void;
@@ -112,6 +112,7 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
     };
 
     useEffect(() => {
+        // Load the YouTube iframe API when the component mounts
         const loadYouTubeAPI = () => {
             if (!window.YT && !scriptLoadedRef.current) {
                 scriptLoadedRef.current = true;
@@ -130,6 +131,12 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
             // Create a new container for the player
             const playerElement = document.createElement('div');
             playerElement.id = 'youtube-player';
+            playerElement.style.width = '100%';
+            playerElement.style.height = '100%';
+            playerElement.style.position = 'absolute';
+            playerElement.style.top = '0';
+            playerElement.style.left = '0';
+            playerElement.className = 'w-full';
             playerContainerRef.current.appendChild(playerElement);
 
             playerInitializedRef.current = true;
@@ -188,7 +195,7 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
     }, [activeStream?.extractedId, creatorId, session?.data?.user?.id, loading]);
 
     return (
-        <Card className="overflow-hidden bg-gray-950 relative md:w-[80%] md:mx-auto">
+        <Card className=" bg-gray-950 relative md:w-[80%] w-screen md:mx-auto">
             <CardContent className="p-0">
                 {loading ? (
                     <div>
@@ -198,10 +205,11 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
                         </div>
                     </div>
                 ) : (
-                    <>
-                        <div className="aspect-video bg-gray-800 w-full">
+                    <div className='md:w-full flex flex-col max-md:w-full ' >
+                        <div className="aspect-video bg-gray-800 relative overflow-hidden max-w-full">
                             {activeStream ? (
-                                <div ref={playerContainerRef} className="aspect-video" />
+                                <div ref={playerContainerRef} className="absolute inset-0 "
+                                    style={{ contain: 'strict' }} />
                             ) : (
                                 <div className='bg-gray-900 flex justify-center items-center h-full'>
                                     No Active Stream
@@ -234,9 +242,9 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
                                 )}
                             </div>
                         </div>
-                    </>
+                    </div>
                 )}
             </CardContent>
-        </Card>
+        </Card >
     );
 }
