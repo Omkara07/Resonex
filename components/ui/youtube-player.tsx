@@ -20,6 +20,7 @@ declare global {
                     playerVars?: {
                         autoplay?: 0 | 1;
                         controls?: 0 | 1;
+                        mute?: 0 | 1;
                         modestbranding?: 0 | 1;
                         rel?: 0 | 1;
                         showinfo?: 0 | 1;
@@ -131,12 +132,6 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
             // Create a new container for the player
             const playerElement = document.createElement('div');
             playerElement.id = 'youtube-player';
-            playerElement.style.width = '100%';
-            playerElement.style.height = '100%';
-            playerElement.style.position = 'absolute';
-            playerElement.style.top = '0';
-            playerElement.style.left = '0';
-            playerElement.className = 'w-full';
             playerContainerRef.current.appendChild(playerElement);
 
             playerInitializedRef.current = true;
@@ -147,6 +142,7 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
                     videoId: activeStream.extractedId,
                     playerVars: {
                         autoplay: 1,
+                        mute: 0,
                         controls: creatorId === session?.data?.user?.id ? 1 : 0,
                         modestbranding: 1,
                         rel: 0,
