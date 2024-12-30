@@ -201,7 +201,7 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
                         </div>
                     </div>
                 ) : (
-                    <div className='md:w-full flex flex-col max-md:w-screen ' >
+                    <div className='md:w-full flex flex-col max-md:w-[94vw] mx-auto ' >
                         <div className="aspect-video bg-gray-800 flex overflow-hidden -px-3">
                             {activeStream ? (
                                 <div ref={playerContainerRef} className='aspect-video' />
