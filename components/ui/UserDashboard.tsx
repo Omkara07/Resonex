@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { useRouter } from 'next/navigation';
 import DialogBox from './DialogBox';
 import { useSession } from 'next-auth/react';
+import { Skeleton } from './skeleton';
 
 type userType = {
     id: string,
@@ -20,6 +21,62 @@ type userType = {
     hostedRooms: any[],
     memberOfRooms: any[]
 }
+
+const ProfileSkeleton = () => (
+    <Card className="bg-zinc-900 border-zinc-700">
+        <CardHeader>
+            <CardTitle className="text-xl font-semibold text-white">Profile</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center space-y-4">
+            <Skeleton className="h-24 w-24 rounded-full" />
+            <div className="text-center space-y-2 w-full">
+                <Skeleton className="h-6 w-32 mx-auto" />
+                <Skeleton className="h-4 w-48 mx-auto" />
+            </div>
+            <Separator className="bg-zinc-800" />
+            <div className="w-full space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+            </div>
+        </CardContent>
+    </Card>
+);
+
+const RoomCardSkeleton = () => (
+    <Card className="bg-zinc-800 border-zinc-700">
+        <CardContent className="p-4">
+            <div className="flex justify-between items-center">
+                <div>
+                    <Skeleton className="h-5 w-32 mb-2" />
+                    <Skeleton className="h-4 w-24" />
+                </div>
+                <div className="flex gap-4 items-center">
+                    <Skeleton className="h-6 w-16 rounded-full" />
+                    <Skeleton className="h-6 w-6" />
+                </div>
+            </div>
+        </CardContent>
+    </Card>
+);
+
+const RoomsSkeleton = ({ title }: { title: string }) => (
+    <Card className="bg-zinc-900 border-zinc-700 md:h-1/2">
+        <CardHeader>
+            <CardTitle className="text-xl font-semibold flex items-center gap-2 text-white">
+                {title === "Hosted" ? <Home className="h-5 w-5" /> : <Users className="h-5 w-5" />}
+                {title === "Hosted" ? "Rooms You Host" : "Rooms You're In"}
+            </CardTitle>
+        </CardHeader>
+        <CardContent>
+            <div className="grid gap-4">
+                {[1, 2].map((i) => (
+                    <RoomCardSkeleton key={i} />
+                ))}
+            </div>
+        </CardContent>
+    </Card>
+);
+
 const UserDashboard = () => {
     const [user, setUser] = useState<userType | null>(null)
     const [roomName, setRoomName] = useState<string>('');
