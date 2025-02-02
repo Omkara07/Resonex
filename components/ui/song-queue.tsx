@@ -11,55 +11,60 @@ import { useSongQueue } from '../../hooks/UseSongQueue'
 import { Skeleton } from './skeleton'
 import { toast } from 'sonner'
 import { Song } from '@/context/SongQueueContext'
+import { socket } from '@/socketClient/socket'
 
-
-export function SongQueue({ creatorId }: { creatorId: string }) {
+export function SongQueue({ creatorId, roomId }: { creatorId: string, roomId: string }) {
     const session: any = useSession()
     const { queue, setQueue, getStreams } = useSongQueue()
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchData = async () => {
-            await getStreams({ creatorId })
+            await getStreams({ creatorId, roomId })
             setLoading(false)
         }
 
         fetchData()
-        const interval = setInterval(() => {
-            getStreams({ creatorId })
-        }, 10 * 1000)
-        return () => clearInterval(interval)
+        // const interval = setInterval(() => {
+        //     getStreams({ creatorId, roomId })
+        // }, 10 * 1000)
+        // return () => clearInterval(interval)
     }, [])
-    const handleVote = (id: string, haveUpvoted: boolean, userId: string) => {
-        setQueue(prevQueue =>
-            prevQueue
-                .map(song =>
-                    song.id === id ? { ...song, upvotes: song.upvotes + (haveUpvoted ? -1 : 1), haveUpvoted: !haveUpvoted } : song
-                )
-                .sort((a: Song, b: Song) => {
-                    if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;
-                    // If upvotes are equal, sort by title alphabetically
-                    return a.title.localeCompare(b.title);
-                })
-        )
-        haveUpvoted ? axios.post('/api/streams/downvote', {
+    const handleVote = async (id: string, haveUpvoted: boolean, userId: string) => {
+        // setQueue(prevQueue =>
+        //     prevQueue
+        //         .map(song =>
+        //             song.id === id ? { ...song, upvotes: song.upvotes + (haveUpvoted ? -1 : 1), haveUpvoted: !haveUpvoted } : song
+        //         )
+        //         .sort((a: Song, b: Song) => {
+        //             if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;
+        //             // If upvotes are equal, sort by title alphabetically
+        //             return a.title.localeCompare(b.title);
+        //         })
+        // )
+        haveUpvoted ? await axios.post('/api/streams/downvote', {
             streamId: id,
             userId
         }) :
-            axios.post('/api/streams/upvote', {
+            await axios.post('/api/streams/upvote', {
                 streamId: id,
                 userId
             })
+
+        socket.emit("queue-update", { roomId, userId })
 
         haveUpvoted ? toast.success('Downvoted!') : toast.success('Upvoted!')
     }
 
     return (
-        <Card className="bg-gray-950 relative shadow-[0px_10px_30px_rgba(0,0,0,0.5)] max-h-[85vh] h-full overflow-auto max-md:w-full">
+        <Card className="bg-zinc-black relative shadow-[0px_10px_30px_rgba(0,0,0,0.5)] md:max-h-[88vh] h-full w-full md:overflow-y-auto max-md:w-full">
             <CardHeader className="">
                 <CardTitle className="text-white">Song Queue</CardTitle>
+                {/* <h1>
+                    {socMess}
+                </h1> */}
             </CardHeader>
-            <CardContent className="p-4">
+            <CardContent className="p-2">
                 {
                     loading ?
                         (
@@ -96,7 +101,7 @@ export function SongQueue({ creatorId }: { creatorId: string }) {
                                 {queue.map(song => (
                                     <li
                                         key={song.id}
-                                        className="flex flex-col sm:flex-row max-md:w-full items-center justify-between rounded-lg bg-gray-900 p-3 transition-all hover:bg-gray-800"
+                                        className="flex flex-col sm:flex-row max-md:w-full items-center justify-between rounded-lg bg-zinc-900 p-3 transition-all hover:bg-zinc-800"
                                     >
                                         <div className="w-full sm:w-2/3 mb-3 sm:mb-0">
                                             <div className="aspect-video relative sm:w-2/3">
@@ -107,12 +112,12 @@ export function SongQueue({ creatorId }: { creatorId: string }) {
                                                 />
                                             </div>
                                             <div className="mt-2 text-center sm:text-left">
-                                                <p className="font-medium text-white">{song.title}</p>
-                                                {/* <p className="text-sm text-gray-400">{song.artist}</p> */}
+                                                <p className="font-medium text-sm text-white">{song.title}</p>
+                                                {/* <p className="text-sm text-zinc-400">{song.artist}</p> */}
                                             </div>
                                         </div>
                                         <div className="flex sm:flex-col items-center space-x-2 sm:space-x-0 sm:space-y-2 w-full sm:w-auto pl-2">
-                                            <span className="text-sm text-gray-300 my-2 mx-auto font-bold">{song?.upvotes}</span>
+                                            <span className="text-sm text-zinc-300 my-2 mx-auto font-bold">{song?.upvotes}</span>
                                             <div className="flex items-center w-full sm:w-auto space-x-2 sm:space-x-0 ">
                                                 {
                                                     song.haveUpvoted ?
@@ -120,7 +125,7 @@ export function SongQueue({ creatorId }: { creatorId: string }) {
                                                             size="lg"
                                                             variant="outline"
                                                             onClick={() => handleVote(song.id, song.haveUpvoted, session?.data?.user.id)}
-                                                            className="flex-1 sm:flex-initial items-center text-gray-400 hover:text-gray-200 hover:bg-gray-700"
+                                                            className="flex-1 sm:flex-initial items-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700"
                                                         >
                                                             <ArrowBigDown className="h-4 w-4" />
                                                             Downvote
@@ -129,7 +134,7 @@ export function SongQueue({ creatorId }: { creatorId: string }) {
                                                             size="lg"
                                                             variant="outline"
                                                             onClick={() => handleVote(song.id, song.haveUpvoted, session?.data?.user.id)}
-                                                            className="flex-1 sm:flex-initial items-center text-gray-400 hover:text-gray-200 hover:bg-gray-700"
+                                                            className="flex-1 sm:flex-initial items-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700"
                                                         >
                                                             <ArrowBigUp className="h-4 w-4" />
                                                             Upvote

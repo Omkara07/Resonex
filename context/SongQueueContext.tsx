@@ -1,6 +1,7 @@
 "use client"
+import { socket } from "@/socketClient/socket";
 import axios from "axios";
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 export interface Song {
     id: string
@@ -23,7 +24,7 @@ interface SongQueueContextType {
     setQueue: React.Dispatch<React.SetStateAction<Song[]>>;
     activeStream: Song | null;
     setActiveStream: React.Dispatch<React.SetStateAction<Song | null>>;
-    getStreams: ({ creatorId }: { creatorId: string }) => Promise<void>;
+    getStreams: ({ creatorId, roomId }: { creatorId: string, roomId: string }) => Promise<void>;
 }
 
 export const SongQueueContext = createContext<SongQueueContextType | null>(null);
@@ -32,9 +33,24 @@ const SongQueueContextProvider = ({ children }: { children: ReactNode }) => {
     const [queue, setQueue] = useState<Song[]>([])
     const [activeStream, setActiveStream] = useState<Song | null>(null)
 
-    async function getStreams({ creatorId }: { creatorId: string }) {
+    useEffect(() => {
+        socket.on("updated-queue", async ({ streams }: { streams: any }) => {
+            const sortedStreams = streams.sort((a: Song, b: Song) => {
+                if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;
+                // If upvotes are equal, sort by title alphabetically
+                return a.title.localeCompare(b.title);
+            }); // Sort streams by upvotes
+            setQueue(sortedStreams);
+        })
+
+        socket.on('updated-activeStream', async ({ activeStream }: { activeStream: any }) => {
+            console.log(activeStream)
+            setActiveStream(activeStream)
+        })
+    }, [])
+    async function getStreams({ creatorId, roomId }: { creatorId: string, roomId: string }) {
         try {
-            await axios.get('/api/streams?creatorId=' + creatorId)
+            await axios.get(`/api/streams?creatorId=${creatorId}&roomId=${roomId}`)
                 .then(res => {
                     const sortedStreams = res.data.streams.sort((a: Song, b: Song) => {
                         if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;

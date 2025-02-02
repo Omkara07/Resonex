@@ -4,18 +4,20 @@ import { z } from "zod"
 import { google } from "googleapis"
 import { getServerSession } from "next-auth";
 import { NEXT_AUTH_CONFIG } from "@/app/lib/auth";
+import { X } from "lucide-react";
 
 const CreateStreamSchema = z.object({
     creatorId: z.string(),
-    url: z.string()
+    url: z.string(),
+    roomId: z.string()
 })
 const YT_Regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|v\/|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[^\s]*)/;
 
 export async function GET(req: NextRequest) {
-    const creatorId = req.nextUrl.searchParams.get("creatorId")
-    if (!creatorId) {
+    const roomId = req.nextUrl.searchParams.get("roomId")
+    if (!roomId) {
         return NextResponse.json({
-            message: "User not found"
+            message: "Room not found"
         }, {
             status: 403
         })
@@ -30,7 +32,7 @@ export async function GET(req: NextRequest) {
     }
     const [streams, activeStreams] = await Promise.all([prismaClient.stream.findMany({
         where: {
-            userId: creatorId,
+            roomId: roomId,
             played: false
         },
         include: {
@@ -47,7 +49,7 @@ export async function GET(req: NextRequest) {
         }
     }), prismaClient.currentStream.findUnique({
         where: {
-            userId: creatorId
+            roomId: roomId
         },
         include: {
             stream: true
@@ -97,7 +99,8 @@ export async function POST(req: NextRequest) {
                     extractedId,
                     type: "Youtube",
                     title: title ?? "Titleless Stream",
-                    img: thumbnail.url ?? "https://media.wired.com/photos/5f9ca518227dbb78ec30dacf/master/pass/Gear-RIP-Google-Music-1194411695.jpg"
+                    img: thumbnail.url ?? "https://media.wired.com/photos/5f9ca518227dbb78ec30dacf/master/pass/Gear-RIP-Google-Music-1194411695.jpg",
+                    roomId: data?.roomId
                 }
             })
             return NextResponse.json({
@@ -111,7 +114,8 @@ export async function POST(req: NextRequest) {
     catch (e) {
         console.log(e)
         return NextResponse.json({
-            message: "error while adding a stream"
+            message: "error while adding a stream",
+            error: e
         }, {
             status: 411
         })

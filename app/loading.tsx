@@ -2,10 +2,8 @@ import React from 'react'
 
 const loading = () => {
     return (
-        <div className="flex flex-col justify-center h-[80vh]">
-            <div className="flex justify-center">
-                Loading...
-            </div>
+        <div className="bg-zinc-950 text-white h-screen flex items-center justify-center">
+            <div className="animate-pulse text-xl">Loading...</div>
         </div>
     )
 }

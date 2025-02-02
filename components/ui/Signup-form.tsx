@@ -37,7 +37,7 @@ export function SignupForm() {
         <div className="w-full max-w-md space-y-8">
             <div>
                 <h2 className="mt-6 text-3xl font-extrabold text-white">Welcome back</h2>
-                <p className="mt-2 text-sm text-gray-400">Please sign in to your account</p>
+                <p className="mt-2 text-sm text-zinc-400">Please sign in to your account</p>
             </div>
             <form className="mt-8 space-y-6">
                 <div className="rounded-md shadow-sm -space-y-px">
@@ -51,7 +51,7 @@ export function SignupForm() {
                             type="text"
                             autoComplete="fullname"
                             required
-                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white rounded-t-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm bg-gray-900"
+                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-700 placeholder-zinc-500 text-white rounded-t-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm bg-zinc-900"
                             placeholder="Fullname"
                             value={fullname}
                             onChange={(e) => setFullname(e.target.value)}
@@ -67,7 +67,7 @@ export function SignupForm() {
                             type="email"
                             autoComplete="email"
                             required
-                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white rounded-t-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm bg-gray-900"
+                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-700 placeholder-zinc-500 text-white rounded-t-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm bg-zinc-900"
                             placeholder="Email address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -83,7 +83,7 @@ export function SignupForm() {
                             type="password"
                             autoComplete="current-password"
                             required
-                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white rounded-b-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm bg-gray-900"
+                            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-700 placeholder-zinc-500 text-white rounded-b-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm bg-zinc-900"
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -95,20 +95,20 @@ export function SignupForm() {
                     <Button
                         type="submit"
                         onClick={handleSignup}
-                        className="group relative w-full font-semibold flex justify-center py-2 px-4 border border-transparent text-sm rounded-md text-black bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                        className="group relative w-full font-semibold flex justify-center py-2 px-4 border border-transparent text-sm rounded-md text-black bg-white hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
                     >
                         Sign up
                     </Button>
                 </div>
                 <div className="mt-6 flex items-center justify-center">
-                    <div className="border-t border-gray-700 w-full"></div>
-                    <div className="px-2 text-sm text-gray-500">Or</div>
-                    <div className="border-t border-gray-700 w-full"></div>
+                    <div className="border-t border-zinc-700 w-full"></div>
+                    <div className="px-2 text-sm text-zinc-500">Or</div>
+                    <div className="border-t border-zinc-700 w-full"></div>
                 </div>
                 <div className="mt-4">
                     <Button
                         type="button"
-                        className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-semibold rounded-md text-black bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200"
+                        className="group relative w-full flex justify-center py-2 px-4 border border-zinc-300 text-sm font-semibold rounded-md text-black bg-white hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-200"
                         onClick={handleGoogleLogin}
                     >
                         <FcGoogle className="h-8 w-8 font-bold text-xl" />
@@ -116,7 +116,7 @@ export function SignupForm() {
                     </Button>
                 </div>
                 <div className='flex items-center justify-center md:pt-10'>
-                    <p>Already have an account? <Link href={`/auth/signin?callbackUrl=${callbackUrl}`} className="hover:underline text-sm text-white hover:text-gray-300 font-bold">Login</Link></p>
+                    <p>Already have an account? <Link href={`/auth/signin?callbackUrl=${callbackUrl}`} className="hover:underline text-sm text-white hover:text-zinc-300 font-bold">Login</Link></p>
                 </div>
             </form>
         </div>

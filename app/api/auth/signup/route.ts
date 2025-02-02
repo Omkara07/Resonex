@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
             }
         })
 
-        return NextResponse.json({ email: user.email, name: user.name, success: true })
+        return NextResponse.json({ email: user.email, name: user.name, image: user.image, success: true })
     }
     catch (e: any) {
         return NextResponse.json({ success: false, message: e.message })

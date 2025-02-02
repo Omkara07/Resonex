@@ -11,8 +11,9 @@ import { useSongQueue } from '../../hooks/UseSongQueue'
 import { Skeleton } from './skeleton'
 import { toast } from 'sonner'
 import { ShareButton } from './share-button'
+import { socket } from '@/socketClient/socket'
 
-export function AddSongForm({ creatorId }: { creatorId: string }) {
+export function AddSongForm({ creatorId, roomId }: { creatorId: string, roomId: string }) {
     const [url, setUrl] = useState('')
     const session: any = useSession()
     const [videoData, setVideoData] = useState<any>(null)
@@ -54,19 +55,20 @@ export function AddSongForm({ creatorId }: { creatorId: string }) {
         }
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!extractVideoId(url)) {
             return console.log("Invalid url")
         }
         try {
 
-            axios.post('/api/streams', {
+            await axios.post('/api/streams', {
                 creatorId: creatorId,
-                url
+                url,
+                roomId
             })
+            socket.emit('queue-update', { roomId, userId: session?.data?.user?.id })
             setUrl('')
-            getStreams({ creatorId })
             toast.success("Song added to Queue")
         }
         catch (e) {
@@ -76,11 +78,11 @@ export function AddSongForm({ creatorId }: { creatorId: string }) {
     }
     return (
         <>
-            <Card className="bg-gray-950 relative overflow-hidden md:w-[80%] w-full md:mx-auto">
+            <Card className="bg-zinc-900 relative overflow-hidden w-full md:mx-auto">
                 <CardHeader>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex justify-between items-center w-full'>
                         <CardTitle className="text-white flex">Add a Song</CardTitle>
-                        <ShareButton creatorId={creatorId} />
+                        <ShareButton roomId={roomId} creatorId={creatorId} />
                     </div>
                 </CardHeader>
                 <CardContent className="p-4">
@@ -90,9 +92,9 @@ export function AddSongForm({ creatorId }: { creatorId: string }) {
                             placeholder="Paste YouTube URL here"
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
-                            className="flex-grow bg-gray-800 text-white placeholder-gray-400  focus:border-gray-300 focus:ring-gray-300"
+                            className="flex-grow bg-zinc-700 focus:bg-zinc-800 text-white placeholder-zinc-400  focus:border-zinc-300 focus:ring-zinc-300"
                         />
-                        <Button type="submit" className="bg-gray-400 hover:bg-gray-200 text-black ">
+                        <Button type="submit" className="bg-zinc-400 hover:bg-zinc-200 text-black ">
                             <PlusCircle className="h-4 w-4 mr-2" />
                             Add
                         </Button>
@@ -101,7 +103,7 @@ export function AddSongForm({ creatorId }: { creatorId: string }) {
             </Card >
             {url && (
                 <div className='w-full md:w-[80%] mx-auto -top-8 relative justify-center'>
-                    <div className="absolute z-10 md:w-2/3 mx-auto w-full aspect-video bg-gray-800 p-4 rounded-md shadow-md ">
+                    <div className="absolute z-10 md:w-2/3 mx-auto w-full aspect-video bg-zinc-800 p-4 rounded-md shadow-md ">
                         {
                             loading ?
                                 (

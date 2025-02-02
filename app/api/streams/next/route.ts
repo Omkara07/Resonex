@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+    const roomId = req.nextUrl.searchParams.get("roomId")
     const session = await getServerSession(NEXT_AUTH_CONFIG);
     if (!session && !session.user.id) {
         return NextResponse.json({
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
     }
     const mostUpvotedStream = await prismaClient.stream.findFirst({
         where: {
-            userId: session.user.id,
+            roomId: roomId ?? "",
             played: false
         },
         orderBy: [
@@ -29,14 +30,14 @@ export async function GET(req: NextRequest) {
     const user = session.user
     const stream = await Promise.all([prismaClient.currentStream.upsert({
         where: {
-            userId: user?.id ?? ""
+            roomId: roomId ?? ""
         },
         update: {
-            userId: user.id ?? "",
+            roomId: roomId ?? "",
             streamId: mostUpvotedStream?.id ?? ""
         },
         create: {
-            userId: user.id ?? "",
+            roomId: roomId ?? "",
             streamId: mostUpvotedStream?.id ?? ""
         }
     }), prismaClient.stream.update({

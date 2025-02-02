@@ -14,13 +14,16 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  email    String   @unique
-  name     String?
-  password String?
-  provider Provider
-  upvotes  Upvote[]
-  streams  Stream[]
+  id            String   @id @default(uuid())
+  email         String   @unique
+  name          String?
+  password      String?
+  image         String   @default("https://img.freepik.com/premium-photo/sticker-boy-using-headphones-anime-st-creative-design-bold-line-cute-kawaii-style_655090-455204.jpg")
+  provider      Provider
+  upvotes       Upvote[]
+  hostedRooms   Room[]   @relation("hostedBy")
+  memberOfRooms Room[]   @relation("roomMembers")
+  streams       Stream[]
 }
 
 model Stream {
@@ -38,14 +41,17 @@ model Stream {
   userId        String
   user          User           @relation(fields: [userId], references: [id])
   CurrentStream CurrentStream?
+  roomId        String
+  Room          Room           @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }
 
 model CurrentStream {
-  userId   String  @id
-  streamId String? @unique
+  id       String  @id @default(uuid())
   img      String?
-  password String?
+  streamId String? @unique
   stream   Stream? @relation(fields: [streamId], references: [id])
+  roomId   String? @unique
+  room     Room?   @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }
 
 model Upvote {
@@ -56,6 +62,17 @@ model Upvote {
   stream   Stream @relation(fields: [streamId], references: [id], onDelete: Cascade)
 
   @@unique([userId, streamId])
+}
+
+model Room {
+  id            String         @id @default(uuid())
+  name          String
+  streams       Stream[]
+  isActive      Boolean        @default(true)
+  currentStream CurrentStream?
+  members       User[]         @relation("roomMembers")
+  hostId        String
+  host          User           @relation("hostedBy", fields: [hostId], references: [id])
 }
 
 enum StreamType {

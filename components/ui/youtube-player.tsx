@@ -8,6 +8,8 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Skeleton } from './skeleton';
 import { useSession } from 'next-auth/react';
+import { socket } from '@/socketClient/socket';
+import { toast } from 'sonner';
 
 
 declare global {
@@ -46,7 +48,7 @@ declare global {
     }
 }
 
-export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creatorId: string }) {
+export function YouTubePlayer({ canPlay, creatorId, roomId }: { canPlay: boolean, creatorId: string, roomId: string }) {
     const { activeStream, setActiveStream, getStreams } = useSongQueue();
     const session: any = useSession();
     const [loading, setLoading] = useState<boolean>(false);
@@ -92,16 +94,18 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
             // Properly destroy the player before fetching next song
             destroyPlayer();
 
-            const res = await axios.get('/api/streams/next');
+            const res = await axios.get('/api/streams/next?roomId=' + roomId);
 
             if (res.data.stream) {
-                setActiveStream(res.data.stream);
-                await getStreams({ creatorId });
+                socket.emit('curStream-update', { roomId, curStream: res.data.stream });
+                socket.emit("queue-update", { roomId, userId: session?.data?.user?.id });
             } else {
+                toast.error('No more songs in queue');
                 setActiveStream(null);
             }
         } catch (e) {
             console.error('Error fetching next stream:', e);
+            toast.error("Error fetching next stream")
             setActiveStream(null);
         } finally {
             setLoading(false);
@@ -191,22 +195,22 @@ export function YouTubePlayer({ canPlay, creatorId }: { canPlay: boolean, creato
     }, [activeStream?.extractedId, creatorId, session?.data?.user?.id, loading]);
 
     return (
-        <Card className=" bg-gray-950 relative md:w-[80%] w-full md:mx-auto">
+        <Card className=" bg-zinc-950 relative w-full md:mx-auto">
             <CardContent className="p-0">
                 {loading ? (
                     <div>
-                        <Skeleton className="aspect-video bg-gray-900" />
+                        <Skeleton className="aspect-video bg-zinc-900" />
                         <div className="p-4 flex justify-between">
                             <Skeleton className="h-6 w-3/4" />
                         </div>
                     </div>
                 ) : (
                     <div className='md:w-full flex flex-col max-md:w-[94vw] mx-auto ' >
-                        <div className="aspect-video bg-gray-800 flex overflow-hidden -px-3">
+                        <div className="aspect-video bg-zinc-800 flex overflow-hidden -px-3">
                             {activeStream ? (
                                 <div ref={playerContainerRef} className='aspect-video' />
                             ) : (
-                                <div className='bg-gray-900 flex w-full justify-center items-center h-full'>
+                                <div className='bg-zinc-900 flex w-full justify-center items-center h-full'>
                                     No Active Stream
                                 </div>
                             )}

@@ -1,4 +1,4 @@
-import { prismaClient } from "@/lib/db";
+import { prismaClient } from "../../lib/db.ts";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -31,7 +31,8 @@ export const NEXT_AUTH_CONFIG = {
                     return {
                         id: user?.id,
                         email: user.email,
-                        name: user.name
+                        name: user.name,
+                        image: user.image
                     };
                 }
                 catch (e) {
@@ -61,6 +62,7 @@ export const NEXT_AUTH_CONFIG = {
                         data: {
                             email: user.email,
                             name: user.name,
+                            image: user.image,
                             provider: "Google"
                         }
                     })

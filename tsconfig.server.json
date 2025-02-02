@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "ts-node": {
+    "transpileOnly": true,
+    "esm": true,
+    "experimentalSpecifiers": true
+  },
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "noEmit": false,
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["server.ts", "app/**/*", "lib/**/*"],
+  "exclude": ["node_modules"]
+}
