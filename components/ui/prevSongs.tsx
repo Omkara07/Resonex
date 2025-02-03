@@ -85,13 +85,12 @@ const PlayedSongs = ({
     }, [])
 
     return (
-        <Card className="bg-zinc-900 relative shadow-[0px_10px_30px_rgba(0,0,0,0.5)] md:h-full w-full overflow-y-auto max-md:w-full">
+        <Card className="bg-zinc-900 relative shadow-[0px_10px_30px_rgba(0,0,0,0.5)] md:h-full max-md:h-screen w-full overflow-y-auto max-md:w-full">
             <CardHeader>
                 <CardTitle className="text-white">Played Songs</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 p-4 overflow-y-auto">
+            <CardContent className="space-y-2 md:p-4 overflow-y-auto">
                 {loading ? (
-                    // Show 3 skeleton items while loading
                     <>
                         <SongSkeleton />
                         <SongSkeleton />
@@ -108,7 +107,7 @@ const PlayedSongs = ({
                             className="flex items-center p-2 bg-zinc-800 border-zinc-800 hover:bg-zinc-900 transition-colors"
                         >
                             {/* Song img */}
-                            <div className="aspect-video w-24 mr-3">
+                            <div className="aspect-video md:w-24 mr-3">
                                 {song.img ? (
                                     <img
                                         src={song.img}
@@ -124,7 +123,7 @@ const PlayedSongs = ({
                             </div>
 
                             {/* Song Details */}
-                            <div className="flex-grow">
+                            <div className="flex-grow max-md:w-1/2">
                                 <h3 className="text-sm font-medium text-white truncate max-w-[200px]">
                                     {song.title}
                                 </h3>
@@ -139,7 +138,7 @@ const PlayedSongs = ({
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="ml-2 h-8 w-8"
+                                className="ml-2 h-8 w-8 p-2"
                                 onClick={() => onAddSong({ songId: song.id })}
                             >
                                 <Plus className="h-4 w-4" />

@@ -57,8 +57,8 @@ export function SongQueue({ creatorId, roomId }: { creatorId: string, roomId: st
     }
 
     return (
-        <Card className="bg-zinc-black relative shadow-[0px_10px_30px_rgba(0,0,0,0.5)] md:max-h-[88vh] h-full w-full md:overflow-y-auto max-md:w-full">
-            <CardHeader className="">
+        <Card className="bg-zinc-black relative shadow-[0px_10px_30px_rgba(0,0,0,0.5)] md:max-h-[88vh] max-md:h-screen h-full w-full overflow-y-auto max-md:w-full">
+            <CardHeader className="max-md:hidden">
                 <CardTitle className="text-white">Song Queue</CardTitle>
                 {/* <h1>
                     {socMess}

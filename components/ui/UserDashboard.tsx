@@ -129,7 +129,7 @@ const UserDashboard = () => {
             setUser(prevUser => ({
                 ...prevUser,
                 hostedRooms: prevUser?.hostedRooms ? prevUser?.hostedRooms?.filter((room: any) => room.id !== roomId) : [],
-                id: prevUser?.id ?? '',  // Ensure id is always a string
+                id: prevUser?.id ?? '',
                 email: prevUser?.email ?? '',
                 name: prevUser?.name ?? '',
                 image: prevUser?.image ?? '',
@@ -148,7 +148,7 @@ const UserDashboard = () => {
             setUser((prevUser: any) => ({
                 ...prevUser,
                 hostedRooms: prevUser?.hostedRooms ?? [],
-                id: prevUser?.id ?? '',  // Ensure id is always a string
+                id: prevUser?.id ?? '',
                 email: prevUser?.email ?? '',
                 name: prevUser?.name ?? '',
                 image: prevUser?.image ?? '',
@@ -233,10 +233,12 @@ const UserDashboard = () => {
                                 {
                                     addRoom && (
                                         <div className='flex justify-center items-center w-full py-2'>
-                                            <div className="flex gap-4 w-2/3">
-                                                <Input className='w-2/3 bg-zinc-950' placeholder="Room Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} />
-                                                <Button onClick={handleAddRoom}>Create Room</Button>
-                                                <Button onClick={() => setAddRoom(false)}>Cancel</Button>
+                                            <div className="flex max-md:flex-col gap-4 md:w-2/3">
+                                                <Input className='md:w-2/3 bg-zinc-950' placeholder="Room Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} />
+                                                <div className='flex gap-4 max-md:justify-between'>
+                                                    <Button onClick={handleAddRoom}>Create Room</Button>
+                                                    <Button onClick={() => setAddRoom(false)}>Cancel</Button>
+                                                </div>
                                             </div>
                                         </div>
                                     )

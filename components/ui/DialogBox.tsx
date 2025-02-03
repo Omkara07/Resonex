@@ -65,6 +65,7 @@ const DialogBox = ({ setUser }: Props) => {
         };
         fetchData();
     }, [debounceval, session]);
+    console.log(rooms)
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -88,7 +89,7 @@ const DialogBox = ({ setUser }: Props) => {
                             />
                         </div>
                     </div>
-                    <div className="px-2">
+                    <div className="">
                         {loading ? (
                             <div className="animate-pulse text-sm">Loading...</div>
                         ) : (
@@ -100,8 +101,11 @@ const DialogBox = ({ setUser }: Props) => {
                                 ) : (
                                     <div>
                                         {rooms?.map((room: any) => (
-                                            <Card key={room.id} className="flex items-center gap-2 px-5 justify-between py-2">
-                                                <CardTitle className="text-sm">{room.name}</CardTitle>
+                                            <Card key={room.id} className="flex items-center gap-2 px-5 justify-between py-3">
+                                                <CardTitle className="text">
+                                                    <h1>{room.name}</h1>
+                                                    <div className='font-light text-[12px] py-2 text-gray-400'>Host: <span className='text-gray-300'>{room?.host?.name}</span>,  Members: <span className='text-gray-300'>{room?.members?.length}</span></div>
+                                                </CardTitle>
                                                 <Button onClick={() => handleJoinRoom({ roomId: room.id })}>
                                                     Join
                                                 </Button>

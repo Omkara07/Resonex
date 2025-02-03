@@ -21,6 +21,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
                     hostId: userId, // Exclude rooms where the user is the host
                 },
             },
+            include: {
+                host: true,
+                members: true
+            }
         });
 
         return NextResponse.json(rooms, { status: 200 });

@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { motion } from "framer-motion";
 import axios from 'axios'
 import { toast } from 'sonner'
 import { socket } from "@/socketClient/socket"
@@ -13,6 +13,7 @@ import SongQueueContextProvider from '@/context/SongQueueContext'
 import RoomInfo from './roomInfo'
 import PlayedSongs from './prevSongs'
 import Redirect from '../Redirect'
+import { Card } from './card'
 
 interface Room {
     id: string
@@ -32,6 +33,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
     const { data: session } = useSession() as { data: any }
     const [room, setRoom] = useState<Room | null>(null)
     const [loading, setLoading] = useState(true)
+    const [queueActive, setQueueActive] = useState(true)
 
     useEffect(() => {
         if (!session || !roomId) return
@@ -105,11 +107,28 @@ export default function RoomPage({ roomId }: RoomPageProps) {
                                 />
                             </div>
 
-                            <div className="md:hidden">
-                                <SongQueue
-                                    creatorId={room?.hostId ?? ""}
-                                    roomId={roomId}
-                                />
+                            <div className="md:hidden space-y-2">
+                                <Card className='flex justify-between '>
+                                    <button onClick={() => setQueueActive(!queueActive)} className={`font-bold w-1/2 ${queueActive ? "bg-zinc-800" : "text-zinc-500"} rounded-s-full`}>Song Queue</button>
+                                    <button onClick={() => setQueueActive(!queueActive)} className={`font-bold w-1/2 ${!queueActive ? "bg-zinc-800" : "text-zinc-500"} rounded-e-full`}>Played Songs</button>
+                                </Card>
+                                <motion.div
+                                    key={queueActive ? "queue" : "played"}
+                                    initial={{ opacity: 0, x: queueActive ? -20 : 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: queueActive ? 20 : -20 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    {
+                                        queueActive ?
+                                            <SongQueue
+                                                creatorId={room?.hostId ?? ""}
+                                                roomId={roomId}
+                                            />
+                                            :
+                                            <PlayedSongs roomId={roomId} />
+                                    }
+                                </motion.div>
                             </div>
                         </div>
 
