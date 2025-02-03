@@ -410,7 +410,7 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
                                         )}
                                     </Button>
                                 )}
-                                {canPlay && activeStream && (
+                                {canPlay && (
                                     <Button
                                         onClick={handleNext}
                                         disabled={loading}
