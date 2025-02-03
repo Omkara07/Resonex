@@ -51,7 +51,7 @@ export function SongQueue({ creatorId, roomId }: { creatorId: string, roomId: st
                 userId
             })
 
-        socket.emit("queue-update", { roomId, userId })
+        socket.emit("queue-update", { roomId, userId: session?.data?.user?.id })
 
         haveUpvoted ? toast.success('Downvoted!') : toast.success('Upvoted!')
     }
