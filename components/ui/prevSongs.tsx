@@ -59,7 +59,7 @@ const PlayedSongs = ({
         try {
             const res = await axios.post('/api/streams/getPlayedStreams', { roomId, songId });
             socket.emit('played-streams-update', { roomId, playedStreams: res.data.playedSongs });
-            socket.emit("queue-update", { roomId, userId: session?.data?.user?.id })
+            socket.emit("queue-update", { roomId })
         }
         catch (e) {
             console.error('Failed to add song:', e)

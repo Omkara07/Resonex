@@ -187,7 +187,7 @@ export function TextYTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePla
 
                 if (res.data.stream) {
                     socket.emit('curStream-update', { roomId, curStream: res.data.stream });
-                    socket.emit("queue-update", { roomId, userId: session?.data?.user?.id });
+                    socket.emit("queue-update", { roomId });
                     socket.emit("get-updated-played-streams", { roomId });
                 } else {
                     toast.error('No more songs in queue');

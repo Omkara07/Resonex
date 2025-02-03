@@ -98,7 +98,7 @@ export function YouTubePlayer({ canPlay, creatorId, roomId }: { canPlay: boolean
 
             if (res.data.stream) {
                 socket.emit('curStream-update', { roomId, curStream: res.data.stream });
-                socket.emit("queue-update", { roomId, userId: session?.data?.user?.id });
+                socket.emit("queue-update", { roomId });
             } else {
                 toast.error('No more songs in queue');
                 setActiveStream(null);

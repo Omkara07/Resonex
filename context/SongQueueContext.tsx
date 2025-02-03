@@ -34,13 +34,14 @@ const SongQueueContextProvider = ({ children }: { children: ReactNode }) => {
     const [activeStream, setActiveStream] = useState<Song | null>(null)
 
     useEffect(() => {
-        socket.on("updated-queue", async ({ streams }: { streams: any }) => {
-            const sortedStreams = streams.sort((a: Song, b: Song) => {
-                if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;
-                // If upvotes are equal, sort by title alphabetically
-                return a.title.localeCompare(b.title);
-            }); // Sort streams by upvotes
-            setQueue(sortedStreams);
+        socket.on("updated-queue", async ({ roomId }: { roomId: string }) => {
+            // const sortedStreams = streams.sort((a: Song, b: Song) => {
+            //     if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;
+            //     // If upvotes are equal, sort by title alphabetically
+            //     return a.title.localeCompare(b.title);
+            // }); // Sort streams by upvotes
+            // setQueue(sortedStreams);
+            getStreams({ roomId })
         })
 
         socket.on('updated-activeStream', async ({ activeStream }: { activeStream: any }) => {
@@ -48,9 +49,9 @@ const SongQueueContextProvider = ({ children }: { children: ReactNode }) => {
             setActiveStream(activeStream)
         })
     }, [])
-    async function getStreams({ creatorId, roomId }: { creatorId: string, roomId: string }) {
+    async function getStreams({ roomId }: { roomId: string }) {
         try {
-            await axios.get(`/api/streams?creatorId=${creatorId}&roomId=${roomId}`)
+            await axios.get(`/api/streams?roomId=${roomId}`)
                 .then(res => {
                     const sortedStreams = res.data.streams.sort((a: Song, b: Song) => {
                         if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;

@@ -67,7 +67,7 @@ export function AddSongForm({ creatorId, roomId }: { creatorId: string, roomId: 
                 url,
                 roomId
             })
-            socket.emit('queue-update', { roomId, userId: session?.data?.user?.id })
+            socket.emit('queue-update', { roomId })
             setUrl('')
             toast.success("Song added to Queue")
         }
