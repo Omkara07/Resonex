@@ -169,149 +169,164 @@ const UserDashboard = () => {
             <div className="flex max-md:flex-col min-h-screen bg-zinc-950 p-6 gap-6 md:pt-16 pt-20">
                 {/* Left Sidebar */}
                 <div className="md:w-1/4 space-y-3 md:pt-5">
-                    <Card className="bg-zinc-900 border-zinc-700">
-                        <CardHeader>
-                            <CardTitle className="text-xl font-semibold text-white">Profile</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex flex-col items-center space-y-4">
-                            <Avatar className="h-24 w-24">
-                                <AvatarImage src={user?.image} alt={user?.name} />
-                                <AvatarFallback className="bg-zinc-800">
-                                    <User className="h-12 w-12 text-zinc-400" />
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className="text-center">
-                                <h3 className="font-medium text-lg text-white">{user?.name}</h3>
-                                <p className="text-sm text-zinc-400">{user?.email}</p>
-                            </div>
-                            <Separator className="bg-zinc-800" />
-                            <div className="w-full space-y-2">
-                                <div className="flex items-center gap-2 text-sm text-zinc-400">
-                                    <Home className="h-4 w-4" />
-                                    <span>Hosting {user?.hostedRooms?.length ?? "No"} rooms</span>
+                    {loading ? (
+                        <ProfileSkeleton />
+                    ) : (
+                        <Card className="bg-zinc-900 border-zinc-700">
+                            <CardHeader>
+                                <CardTitle className="text-xl font-semibold text-white">Profile</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex flex-col items-center space-y-4">
+                                <Avatar className="h-24 w-24">
+                                    <AvatarImage src={user?.image} alt={user?.name} />
+                                    <AvatarFallback className="bg-zinc-800">
+                                        <User className="h-12 w-12 text-zinc-400" />
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div className="text-center">
+                                    <h3 className="font-medium text-lg text-white">{user?.name}</h3>
+                                    <p className="text-sm text-zinc-400">{user?.email}</p>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-zinc-400">
-                                    <Users className="h-4 w-4" />
-                                    <span>Member of {user?.memberOfRooms?.length ?? "No"} rooms</span>
+                                <Separator className="bg-zinc-800" />
+                                <div className="w-full space-y-2">
+                                    <div className="flex items-center gap-2 text-sm text-zinc-400">
+                                        <Home className="h-4 w-4" />
+                                        <span>Hosting {user?.hostedRooms?.length ?? "No"} rooms</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-sm text-zinc-400">
+                                        <Users className="h-4 w-4" />
+                                        <span>Member of {user?.memberOfRooms?.length ?? "No"} rooms</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    )
+                    }
                 </div>
 
                 {/* Right Content */}
                 <div className="flex-1 space-y-4 md:p-2">
-                    {/* Hosted Rooms */}
-                    <Card className="bg-zinc-900 border-zinc-700 md:h-1/2 overflow-y-auto">
-                        <CardHeader className='flex justify-between items-center'>
-                            <CardTitle className="text-xl font-semibold flex items-center gap-2 text-white">
-                                <Home className="h-5 w-5" />
-                                Rooms You Host
-                            </CardTitle>
-                            <div>
+                    {loading ? (
+                        <>
+                            <RoomsSkeleton title="Hosted" />
+                            <RoomsSkeleton title="Member" />
+                        </>
+                    ) : (
+                        <>
+                            {/* Hosted Rooms */}
+                            <Card className="bg-zinc-900 border-zinc-700 md:h-1/2 overflow-y-auto">
+                                <CardHeader className='flex justify-between items-center'>
+                                    <CardTitle className="text-xl font-semibold flex items-center gap-2 text-white">
+                                        <Home className="h-5 w-5" />
+                                        Rooms You Host
+                                    </CardTitle>
+                                    <div>
+                                        {
+                                            user && user?.hostedRooms?.length < 3 && (
+                                                <Button className={`font-bold text-xl p-4 trasition duration-300`} onClick={() => setAddRoom((prev) => !prev)}>
+                                                    <div className={`inline-block transform transition-transform duration-300 ${addRoom ? "rotate-45 scale-125" : ""}`}>+</div>
+                                                </Button>
+                                            )
+                                        }
+                                    </div>
+                                </CardHeader>
                                 {
-                                    user && user?.hostedRooms?.length < 3 && (
-                                        <Button className={`font-bold text-xl p-4 trasition duration-300`} onClick={() => setAddRoom((prev) => !prev)}>
-                                            <div className={`inline-block transform transition-transform duration-300 ${addRoom ? "rotate-45 scale-125" : ""}`}>+</div>
-                                        </Button>
+                                    addRoom && (
+                                        <div className='flex justify-center items-center w-full py-2'>
+                                            <div className="flex gap-4 w-2/3">
+                                                <Input className='w-2/3 bg-zinc-950' placeholder="Room Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} />
+                                                <Button onClick={handleAddRoom}>Create Room</Button>
+                                                <Button onClick={() => setAddRoom(false)}>Cancel</Button>
+                                            </div>
+                                        </div>
                                     )
                                 }
-                            </div>
-                        </CardHeader>
-                        {
-                            addRoom && (
-                                <div className='flex justify-center items-center w-full py-2'>
-                                    <div className="flex gap-4 w-2/3">
-                                        <Input className='w-2/3 bg-zinc-950' placeholder="Room Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} />
-                                        <Button onClick={handleAddRoom}>Create Room</Button>
-                                        <Button onClick={() => setAddRoom(false)}>Cancel</Button>
-                                    </div>
-                                </div>
-                            )
-                        }
-                        <CardContent className="h-[calc(100%_-_4rem)] overflow-y-auto">
-                            {
-                                user?.hostedRooms?.length === 0 ? <div>
-                                    {!addRoom && <p className="text-sm text-zinc-400">You have not hosted any rooms.</p>}
-                                </div>
-                                    :
-                                    <div className="grid gap-4 h-full overflow-y-auto">
-                                        {user?.hostedRooms?.map((room: any) => (
-                                            <Card key={room?.id} className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 transition-colors">
-                                                <CardContent className="p-4">
-                                                    <div className="flex justify-between items-center">
-                                                        <div className='cursor-pointer' onClick={() => handleLink(room?.id)}>
-                                                            <h3 className="font-medium text-white">{room?.name}</h3>
-                                                            <p className="text-sm text-zinc-400">{room?.members?.length ? room?.members?.length : 0} {room?.members?.length === 1 ? "member" : "members"}</p>
-                                                        </div>
-                                                        <div className='flex gap-4 items-center'>
-                                                            <div className={`px-2 py-1 rounded-full text-xs ${room?.isActive
-                                                                ? 'bg-green-900 text-green-200'
-                                                                : 'bg-zinc-700 text-zinc-300'
-                                                                }`}>
-                                                                {room?.isActive ? 'Active' : 'Inactive'}
+                                <CardContent className="h-[calc(100%_-_4rem)] overflow-y-auto">
+                                    {
+                                        user?.hostedRooms?.length === 0 ? <div>
+                                            {!addRoom && <p className="text-sm text-zinc-400">You have not hosted any rooms.</p>}
+                                        </div>
+                                            :
+                                            <div className="grid gap-4 h-full overflow-y-auto">
+                                                {user?.hostedRooms?.map((room: any) => (
+                                                    <Card key={room?.id} className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 transition-colors">
+                                                        <CardContent className="p-4">
+                                                            <div className="flex justify-between items-center">
+                                                                <div className='cursor-pointer' onClick={() => handleLink(room?.id)}>
+                                                                    <h3 className="font-medium text-white">{room?.name}</h3>
+                                                                    <p className="text-sm text-zinc-400">{room?.members?.length ? room?.members?.length : 0} {room?.members?.length === 1 ? "member" : "members"}</p>
+                                                                </div>
+                                                                <div className='flex gap-4 items-center'>
+                                                                    <div className={`px-2 py-1 rounded-full text-xs ${room?.isActive
+                                                                        ? 'bg-green-900 text-green-200'
+                                                                        : 'bg-zinc-700 text-zinc-300'
+                                                                        }`}>
+                                                                        {room?.isActive ? 'Active' : 'Inactive'}
+                                                                    </div>
+                                                                    <button onClick={() => handleDeleteRoom({ roomId: room?.id })}><Trash2 /></button>
+                                                                </div>
                                                             </div>
-                                                            <button onClick={() => handleDeleteRoom({ roomId: room?.id })}><Trash2 /></button>
-                                                        </div>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-                                    </div>
-                            }
-                        </CardContent>
-                    </Card>
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                    }
+                                </CardContent>
+                            </Card>
 
-                    {/* Member Rooms */}
-                    <Card className="bg-zinc-900 border-zinc-700 md:h-1/2 overflow-y-auto">
-                        <CardHeader className='flex justify-between items-center'>
-                            <CardTitle className="text-xl font-semibold flex items-center gap-2 text-white">
-                                <Users className="h-5 w-5" />
-                                Rooms You're In
-                            </CardTitle>
-                            <div>
-                                {
-                                    user && user?.memberOfRooms?.length < 3 && (
-                                        <DialogBox setUser={setUser} />
-                                    )
-                                }
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            {
-                                user && user?.memberOfRooms?.length === 0 ? (
-                                    <p className="text-sm text-zinc-400">You are not member of any rooms.</p>
-                                )
-                                    :
-                                    <div className="grid gap-4">
-                                        {user?.memberOfRooms?.map((room: any) => (
-                                            <Card key={room?.id} className="bg-zinc-800 hover:bg-zinc-700 border-zinc-700 transition-colors">
-                                                <CardContent className="p-4">
-                                                    <div className="flex justify-between items-center">
-                                                        <div className='cursor-pointer' onClick={() => handleLink(room?.id)}>
-                                                            <h3 className="font-medium text-white">{room?.name}</h3>
-                                                            <p className="text-sm text-zinc-400">{room?.members?.length ? room?.members?.length : 0} {room?.members?.length === 1 ? "member" : "members"}</p>
-                                                        </div>
-                                                        <div className='flex gap-4 items-center'>
-                                                            <div className={`px-2 py-1 rounded-full text-xs ${room.isActive
-                                                                ? 'bg-green-900 text-green-200'
-                                                                : 'bg-zinc-700 text-zinc-300'
-                                                                }`}>
-                                                                {room?.isActive ? 'Active' : 'Inactive'}
-                                                            </div>
-                                                            <button onClick={() => handleLeaveRoom({ roomId: room?.id })}><LogOut /></button>
-                                                        </div>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
+                            {/* Member Rooms */}
+                            <Card className="bg-zinc-900 border-zinc-700 md:h-1/2 overflow-y-auto">
+                                <CardHeader className='flex justify-between items-center'>
+                                    <CardTitle className="text-xl font-semibold flex items-center gap-2 text-white">
+                                        <Users className="h-5 w-5" />
+                                        Rooms You're In
+                                    </CardTitle>
+                                    <div>
+                                        {
+                                            user && user?.memberOfRooms?.length < 3 && (
+                                                <DialogBox setUser={setUser} />
+                                            )
+                                        }
                                     </div>
-                            }
-                        </CardContent>
-                    </Card>
+                                </CardHeader>
+                                <CardContent>
+                                    {
+                                        user && user?.memberOfRooms?.length === 0 ? (
+                                            <p className="text-sm text-zinc-400">You are not member of any rooms.</p>
+                                        )
+                                            :
+                                            <div className="grid gap-4">
+                                                {user?.memberOfRooms?.map((room: any) => (
+                                                    <Card key={room?.id} className="bg-zinc-800 hover:bg-zinc-700 border-zinc-700 transition-colors">
+                                                        <CardContent className="p-4">
+                                                            <div className="flex justify-between items-center">
+                                                                <div className='cursor-pointer' onClick={() => handleLink(room?.id)}>
+                                                                    <h3 className="font-medium text-white">{room?.name}</h3>
+                                                                    <p className="text-sm text-zinc-400">{room?.members?.length ? room?.members?.length : 0} {room?.members?.length === 1 ? "member" : "members"}</p>
+                                                                </div>
+                                                                <div className='flex gap-4 items-center'>
+                                                                    <div className={`px-2 py-1 rounded-full text-xs ${room.isActive
+                                                                        ? 'bg-green-900 text-green-200'
+                                                                        : 'bg-zinc-700 text-zinc-300'
+                                                                        }`}>
+                                                                        {room?.isActive ? 'Active' : 'Inactive'}
+                                                                    </div>
+                                                                    <button onClick={() => handleLeaveRoom({ roomId: room?.id })}><LogOut /></button>
+                                                                </div>
+                                                            </div>
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                    }
+                                </CardContent>
+                            </Card>
+                        </>
+                    )
+                    }
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

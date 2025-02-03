@@ -64,7 +64,7 @@ export function SongQueue({ creatorId, roomId }: { creatorId: string, roomId: st
                     {socMess}
                 </h1> */}
             </CardHeader>
-            <CardContent className="p-2">
+            <CardContent className="p-2 transition duration-300">
                 {
                     loading ?
                         (
@@ -97,7 +97,7 @@ export function SongQueue({ creatorId, roomId }: { creatorId: string, roomId: st
                         )
                         : queue.length === 0 ?
                             <div className='flex justify-center items-center md:mt-40 max-md:h-40 text-sm '> No songs in the Queue</div> :
-                            <ul className="space-y-4">
+                            <ul className="space-y-4 transition duration-300">
                                 {queue.map(song => (
                                     <li
                                         key={song.id}

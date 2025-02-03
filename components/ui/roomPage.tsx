@@ -6,7 +6,7 @@ import axios from 'axios'
 import { toast } from 'sonner'
 import { socket } from "@/socketClient/socket"
 
-import { TextYTPlayer } from './textYTPlayer'
+import { YTPlayer } from './YTPlayer'
 import { SongQueue } from '@/components/ui/song-queue'
 import { AddSongForm } from '@/components/ui/add-song-form'
 import SongQueueContextProvider from '@/context/SongQueueContext'
@@ -79,7 +79,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
                 <main className="container mx-auto px-2 py-8 max-md:p-2">
                     <div className="grid md:grid-cols-7 gap-3">
                         {/* Left Column */}
-                        <div className="col-span-2 flex flex-col gap-3 h-[88vh]">
+                        <div className="col-span-2 flex flex-col gap-3 md:h-[88vh]">
                             <div className="h-2/5 overflow-y-auto">
                                 <RoomInfo
                                     roomName={room?.name ?? ""}
@@ -97,7 +97,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
                             </div>
 
                             <div className="h-3/5">
-                                <TextYTPlayer
+                                <YTPlayer
                                     canPlay={isHost}
                                     creatorId={room?.hostId ?? ""}
                                     roomId={roomId}

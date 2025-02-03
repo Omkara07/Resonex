@@ -61,7 +61,7 @@ interface YouTubePlayerProps {
     creator: any;
 }
 
-export function TextYTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerProps) {
+export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerProps) {
     const { activeStream, setActiveStream } = useSongQueue();
     const session: any = useSession();
     const [loading, setLoading] = useState(false);

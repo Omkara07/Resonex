@@ -22,7 +22,7 @@ const RoomInfo = ({ roomName, creator, members, isLoading }: RoomInfoCardProps) 
         <Card className="w-full bg-zinc-900 text-white overflow-y-auto h-full">
             <CardHeader>
                 <CardTitle className="md:text-xl text-lg font-bold">
-                    {isLoading ? <Skeleton className='w-40 h-6' /> : roomName ?? "Room Name"}
+                    {isLoading ? <Skeleton className='w-40 md:h-6' /> : roomName ?? "Room Name"}
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-1 max-md:hidden h-[50%]">
@@ -60,7 +60,7 @@ const RoomInfo = ({ roomName, creator, members, isLoading }: RoomInfoCardProps) 
                     </div>
 
                     {/* Members List */}
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 pb-2">
                         {isLoading ? (
                             // Show skeletons for member items
                             Array.from({ length: 3 }).map((_, index) => (
