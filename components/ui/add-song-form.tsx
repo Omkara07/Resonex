@@ -102,7 +102,7 @@ export function AddSongForm({ creatorId, roomId }: { creatorId: string, roomId: 
                 </CardContent >
             </Card >
             {url && (
-                <div className='w-full md:w-[80%] mx-auto -top-8 relative justify-center'>
+                <div className='w-full mx-auto relative justify-center'>
                     <div className="absolute z-10 md:w-2/3 mx-auto w-full aspect-video bg-zinc-800 p-4 rounded-md shadow-md ">
                         {
                             loading ?

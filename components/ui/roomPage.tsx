@@ -109,8 +109,8 @@ export default function RoomPage({ roomId }: RoomPageProps) {
 
                             <div className="md:hidden space-y-2">
                                 <Card className='flex justify-between '>
-                                    <button onClick={() => setQueueActive(!queueActive)} className={`font-bold w-1/2 ${queueActive ? "bg-zinc-800" : "text-zinc-500"} rounded-s-full`}>Song Queue</button>
-                                    <button onClick={() => setQueueActive(!queueActive)} className={`font-bold w-1/2 ${!queueActive ? "bg-zinc-800" : "text-zinc-500"} rounded-e-full`}>Played Songs</button>
+                                    <button onClick={() => setQueueActive(true)} className={`font-bold w-1/2 ${queueActive ? "bg-zinc-800" : "text-zinc-500"} rounded-s-full`}>Song Queue</button>
+                                    <button onClick={() => setQueueActive(false)} className={`font-bold w-1/2 ${!queueActive ? "bg-zinc-800" : "text-zinc-500"} rounded-e-full`}>Played Songs</button>
                                 </Card>
                                 <motion.div
                                     key={queueActive ? "queue" : "played"}
@@ -126,7 +126,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
                                                 roomId={roomId}
                                             />
                                             :
-                                            <PlayedSongs roomId={roomId} />
+                                            <PlayedSongs key={roomId} roomId={roomId} />
                                     }
                                 </motion.div>
                             </div>
@@ -149,7 +149,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
                                 />
                             </div>
                             <div className="h-full">
-                                <PlayedSongs roomId={roomId} />
+                                <PlayedSongs key={roomId} roomId={roomId} />
                             </div>
                         </div>
                     </div>

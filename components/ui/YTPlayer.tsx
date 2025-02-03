@@ -237,7 +237,7 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
             playerInstanceRef.current = new window.YT.Player('youtube-player', {
                 videoId: activeStream.extractedId,
                 playerVars: {
-                    autoplay: isHost ? 1 : 0,
+                    autoplay: 1,
                     controls: 0,
                     modestbranding: 1,
                     rel: 0,
