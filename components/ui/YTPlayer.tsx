@@ -68,6 +68,7 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
     const [isPlaying, setIsPlaying] = useState(false);
     const [isBuffering, setIsBuffering] = useState(false);
     const [clientsReady, setClientsReady] = useState(new Set<string>());
+    const [initialSyncDone, setInitialSyncDone] = useState(false);
 
     const isHost = creatorId === session?.data?.user?.id;
 
@@ -246,12 +247,23 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
                 width: '100%',
                 height: '100%',
                 events: {
-                    onReady: (event) => {
+                    onReady: async (event) => {
                         console.log('Player ready');
                         if (isHost) {
                             sendCommand({ type: 'ready' });
+                            const currentTime = await event.target.getCurrentTime();
+                            const playerState = await event.target.getPlayerState();
+                            socket.emit('host-player-state', {
+                                roomId,
+                                state: {
+                                    isPlaying: playerState === window.YT.PlayerState.PLAYING,
+                                    currentTime,
+                                    videoId: activeStream.extractedId
+                                }
+                            });
                         } else {
                             socket.emit('client-ready', { roomId, userId: session?.data?.user?.id });
+                            socket.emit('request-initial-state', { roomId });
                         }
                     },
                     onStateChange: async (event) => {
@@ -349,6 +361,55 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
             destroyPlayer();
         };
     }, [activeStream?.extractedId, isHost, loading]);
+
+    // Add new useEffect for handling initial sync
+    useEffect(() => {
+        const handleHostState = async ({ state }: { state: { isPlaying: boolean; currentTime: number; videoId: string } }) => {
+            if (isHost || !playerInstanceRef.current || initialSyncDone) return;
+
+            try {
+                // Sync with host's state
+                await playerInstanceRef.current.seekTo(state.currentTime, true);
+                if (state.isPlaying) {
+                    await playerInstanceRef.current.playVideo();
+                } else {
+                    await playerInstanceRef.current.pauseVideo();
+                }
+                setInitialSyncDone(true);
+            } catch (error) {
+                console.error('Error syncing with host state:', error);
+            }
+        };
+
+        const handleStateRequest = async () => {
+            if (!isHost || !playerInstanceRef.current) return;
+
+            try {
+                const currentTime = await playerInstanceRef.current.getCurrentTime();
+                const playerState = await playerInstanceRef.current.getPlayerState();
+
+                socket.emit('host-player-state', {
+                    roomId,
+                    state: {
+                        isPlaying: playerState === window.YT.PlayerState.PLAYING,
+                        currentTime,
+                        videoId: activeStream?.extractedId
+                    }
+                });
+            } catch (error) {
+                console.error('Error getting host state:', error);
+            }
+        };
+
+        socket.on('host-player-state', handleHostState);
+        socket.on('request-initial-state', handleStateRequest);
+
+        return () => {
+            socket.off('host-player-state', handleHostState);
+            socket.off('request-initial-state', handleStateRequest);
+        };
+    }, [isHost, roomId, initialSyncDone, activeStream]);
+
 
     return (
         <Card className="bg-zinc-900 relative h-full w-full md:mx-auto">

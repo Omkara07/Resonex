@@ -62,6 +62,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
 
         const handleJoinMessage = (message: string) => {
             toast.success(message)
+            socket.emit("request-player-state", { roomId })
         }
 
         socket.on("joined-message", handleJoinMessage)
