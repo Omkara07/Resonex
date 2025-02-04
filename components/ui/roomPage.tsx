@@ -68,6 +68,10 @@ export default function RoomPage({ roomId }: RoomPageProps) {
         socket.on("joined-message", handleJoinMessage)
 
         return () => {
+            if (isHost) {
+                // Notify others when host is leaving
+                socket.emit('host-leaving', { roomId });
+            }
             socket.emit("leave-room", roomId)
             socket.off("joined-message", handleJoinMessage)
         }

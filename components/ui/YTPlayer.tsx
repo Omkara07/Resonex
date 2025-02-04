@@ -410,6 +410,37 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
         };
     }, [isHost, roomId, initialSyncDone, activeStream]);
 
+    useEffect(() => {
+        const handleHostDisconnect = async () => {
+            if (!playerInstanceRef.current) return;
+
+            try {
+                // Pause the video
+                await playerInstanceRef.current.pauseVideo();
+                setIsPlaying(false);
+
+                // Show notification
+                toast.info("Host has left the room. Stream paused.");
+
+                // If there is an active stream, update its state
+                if (activeStream) {
+                    setActiveStream(prev => ({
+                        ...prev!,
+                        isPlaying: false
+                    }));
+                }
+            } catch (error) {
+                console.error('Error handling host disconnect:', error);
+            }
+        };
+
+        socket.on('host-disconnected', handleHostDisconnect);
+
+        return () => {
+            socket.off('host-disconnected', handleHostDisconnect);
+        };
+    }, [activeStream]);
+
 
     return (
         <Card className="bg-zinc-900 relative h-full w-full md:mx-auto">
