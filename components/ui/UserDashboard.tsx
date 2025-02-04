@@ -166,7 +166,7 @@ const UserDashboard = () => {
     return (
         <div>
             <DashboardHeader />
-            <div className="flex max-md:flex-col min-h-screen bg-zinc-950 p-6 gap-6 md:pt-16 pt-20">
+            <div className="flex max-md:flex-col min-h-screen bg-zinc-950 md:p-6 p-3 gap-6 md:pt-16 pt-20">
                 {/* Left Sidebar */}
                 <div className="md:w-1/4 space-y-3 md:pt-5">
                     {loading ? (
