@@ -421,7 +421,7 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
 
                 // Show notification
                 toast.info("Host has left the room. Stream paused.");
-
+                socket.emit("")
                 // If there is an active stream, update its state
                 if (activeStream) {
                     setActiveStream(prev => ({
