@@ -249,7 +249,11 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
                 events: {
                     onReady: async (event) => {
                         console.log('Player ready');
+                        event.target.pauseVideo();
+                        setIsPlaying(false);
                         if (isHost) {
+                            event.target.playVideo();
+                            setIsPlaying(true);
                             sendCommand({ type: 'ready' });
                             const currentTime = await event.target.getCurrentTime();
                             const playerState = await event.target.getPlayerState();
@@ -261,6 +265,7 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
                                     videoId: activeStream.extractedId
                                 }
                             });
+                            sendCommand({ type: isPlaying ? 'play' : 'pause', timestamp: Date.now(), videoTime: currentTime });
                         } else {
                             socket.emit('client-ready', { roomId, userId: session?.data?.user?.id });
                             socket.emit('request-initial-state', { roomId });
@@ -362,18 +367,19 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
         };
     }, [activeStream?.extractedId, isHost, loading]);
 
-    // Add new useEffect for handling initial sync
+    // useEffect for handling initial sync
     useEffect(() => {
         const handleHostState = async ({ state }: { state: { isPlaying: boolean; currentTime: number; videoId: string } }) => {
             if (isHost || !playerInstanceRef.current || initialSyncDone) return;
 
             try {
                 // Sync with host's state
-                await playerInstanceRef.current.seekTo(state.currentTime, true);
+                // @ts-ignore
+                await playerInstanceRef?.current?.seekTo(state.currentTime, true);
                 if (state.isPlaying) {
-                    await playerInstanceRef.current.playVideo();
+                    await playerInstanceRef?.current?.playVideo();
                 } else {
-                    await playerInstanceRef.current.pauseVideo();
+                    await playerInstanceRef?.current?.pauseVideo();
                 }
                 setInitialSyncDone(true);
             } catch (error) {
@@ -396,6 +402,7 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
                         videoId: activeStream?.extractedId
                     }
                 });
+                sendCommand({ type: playerState === window.YT.PlayerState.PLAYING ? 'play' : 'pause', timestamp: Date.now(), videoTime: currentTime });
             } catch (error) {
                 console.error('Error getting host state:', error);
             }
@@ -411,6 +418,11 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
     }, [isHost, roomId, initialSyncDone, activeStream]);
 
     useEffect(() => {
+        const handleHostReconnect = () => {
+            // Request current state from host
+            socket.emit('request-initial-state', { roomId });
+            socket.emit('host-player-state', { roomId })
+        };
         const handleHostDisconnect = async () => {
             if (!playerInstanceRef.current) return;
 
@@ -435,9 +447,11 @@ export function YTPlayer({ canPlay, creatorId, roomId, creator }: YouTubePlayerP
         };
 
         socket.on('host-disconnected', handleHostDisconnect);
+        socket.on('host-reconnected', handleHostReconnect);
 
         return () => {
             socket.off('host-disconnected', handleHostDisconnect);
+            socket.off('host-reconnected', handleHostReconnect);
         };
     }, [activeStream]);
 
