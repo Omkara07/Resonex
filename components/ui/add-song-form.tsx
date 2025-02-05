@@ -58,10 +58,13 @@ export function AddSongForm({ creatorId, roomId }: { creatorId: string, roomId: 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!extractVideoId(url)) {
-            return console.log("Invalid url")
+            return toast.error("Invalid url")
         }
         try {
-
+            const alreadyAvailStreams = await axios("/api/streams/getAllAvailableStreams?roomId=" + roomId)
+            if (alreadyAvailStreams.data.streams.find((stream: any) => stream.url === url)) {
+                return toast.error("Song already available in room")
+            }
             await axios.post('/api/streams', {
                 creatorId: creatorId,
                 url,
