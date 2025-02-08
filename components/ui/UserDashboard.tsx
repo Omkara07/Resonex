@@ -249,7 +249,7 @@ const UserDashboard = () => {
                                             {!addRoom && <p className="text-sm text-zinc-400">You have not hosted any rooms.</p>}
                                         </div>
                                             :
-                                            <div className="grid gap-4 h-full overflow-y-auto">
+                                            <div className="grid gap-4 overflow-y-auto">
                                                 {user?.hostedRooms?.map((room: any) => (
                                                     <Card key={room?.id} className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 transition-colors">
                                                         <CardContent className="p-4">

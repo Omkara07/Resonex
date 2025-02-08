@@ -103,7 +103,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
                                 />
                             </div>
 
-                            <div className="h-3/5">
+                            <div className={`h-${3 / 5}%`}>
                                 <YTPlayer
                                     canPlay={isHost}
                                     creatorId={room?.hostId ?? ""}
@@ -147,7 +147,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
 
                         {/* Right Column */}
                         <div className="hidden md:flex col-span-2 flex-col gap-3 h-[85vh]">
-                            <div className="h-1/3">
+                            <div className={`h-[${1 / 3}%]`}>
                                 <AddSongForm
                                     creatorId={session?.user?.id}
                                     roomId={roomId}

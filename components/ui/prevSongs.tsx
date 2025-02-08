@@ -85,7 +85,7 @@ const PlayedSongs = ({
     }, [])
 
     return (
-        <Card className="bg-zinc-900 relative shadow-[0px_10px_30px_rgba(0,0,0,0.5)] md:h-full max-md:h-screen w-full overflow-y-auto max-md:w-full">
+        <Card className="bg-zinc-900 relative shadow-[0px_10px_30px_rgba(0,0,0,0.5)] md:h-full max-md:h-full max-md:min-h-[70vh] max-md:max-h-screen w-full overflow-y-auto max-md:w-full">
             <CardHeader>
                 <CardTitle className="text-white">Played Songs</CardTitle>
             </CardHeader>
